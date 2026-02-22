@@ -112,6 +112,13 @@ To run the full test suite on BrowserStack across multiple browsers and devices 
 *   **Local Run:** Console output showing scraped article details, translated titles, download confirmations, and repeated word analysis.
 *   **BrowserStack Run:** Test results will be visible on your BrowserStack Automate dashboard, providing logs, screenshots, and video recordings for each platform defined in `browserstack.yml`.
 
+## Sample Images
+
+Here are some sample images from the `public/` folder, which might be used as placeholders or examples within the project:
+
+![Sample Image 1](public/image.png)
+![Sample Image 2](public/image1.png)
+
 ## Troubleshooting
 
 *   **`TimeoutException` during scraping:** This indicates that a web page took too long to load. The script is designed to handle this gracefully by skipping the problematic article and continuing with others.
