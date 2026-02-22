@@ -118,6 +118,8 @@ Here are some sample images from the `public/` folder, which might be used as pl
 
 ![Sample Image 1](public/image.png)
 ![Sample Image 2](public/image1.png)
+![Sample Image 3](public/image2.png)
+![Sample Image 4](public/image3.png)
 
 ## Troubleshooting
 
