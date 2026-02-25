@@ -16,28 +16,35 @@ def run_test_logic(driver):
     """
     links = get_opinion_articles(driver)
 
-    if not links or len(links) < 5:
-        print("Failed to retrieve the expected number of article links. Exiting.")
+    if not links:
+        print("Failed to retrieve any article links. Exiting.")
         return
+
+    if len(links) < 5:
+        print(f"Warning: Only found {len(links)} articles (expected 5). Proceeding with available articles.")
 
     translated_titles = []
     for link in links:
         title, content, image_url = scrape_article(driver, link)
 
-        if title and content:
-            print("\n--- ARTICLE ---")
-            print(f"Title (Spanish): {title}")
-
-            translated_title = translate_text(title)
-            print(f"Translated Title: {translated_title}")
-            translated_titles.append(translated_title)
-            
-            print(f"Content (Spanish, excerpt): {content[:200]}...")
-            
-            download_image(image_url, title)
-        else:
+        if not title or title == "Title not found":
             print(f"\n--- SKIPPING ARTICLE ---")
-            print(f"Failed to scrape article or content for link: {link}. Moving to next.")
+            print(f"Failed to scrape title for link: {link}. Moving to next.")
+            continue
+
+        print("\n--- ARTICLE ---")
+        print(f"Title (Spanish): {title}")
+
+        translated_title = translate_text(title)
+        print(f"Translated Title: {translated_title}")
+        translated_titles.append(translated_title)
+
+        if content:
+            print(f"Content (Spanish, excerpt): {content[:200]}...")
+        else:
+            print("Content: [Not available — article may be behind a paywall]")
+
+        download_image(image_url, title)
 
     # Analyze repeated words across translated headers (as per assignment)
     combined_headers = " ".join(translated_titles)

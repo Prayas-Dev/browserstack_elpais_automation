@@ -1,129 +1,189 @@
-# El País Article Scraper and Analyzer
+# 📰 El País Opinion Scraper & Cross-Browser Analyzer
 
-This project automates the process of scraping articles from the Opinion section of El País (a Spanish news outlet), translating their titles to English, analyzing repeated words in the translated titles, and demonstrating cross-browser testing on BrowserStack.
+An automated web scraping pipeline that extracts articles from the **Opinion section of [El País](https://elpais.com/opinion/)**, translates their titles to English, performs word frequency analysis, and demonstrates cross-browser testing on **BrowserStack**.
 
-## Features
+---
 
-*   Navigates to El País Opinion section and handles cookie consent.
-*   Scrapes the first five unique articles, extracting title, content excerpt, and cover image URL.
-*   Downloads cover images locally.
-*   Translates article titles from Spanish to English using the RapidAPI Google Translate 113 API.
-*   Analyzes translated English titles to identify words repeated more than twice, excluding common English stopwords.
-*   Supports local execution.
-*   Configured for cross-browser testing on BrowserStack across desktop and mobile platforms.
+## ✨ Features
 
-## Requirements
+| Feature                   | Description                                                                                           |
+| ------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Article Scraping**      | Navigates to El País Opinion section, handles cookie consent, and scrapes the first 5 unique articles |
+| **Paywall Resilience**    | Gracefully handles paywalled articles using multi-selector fallback extraction                        |
+| **Image Download**        | Downloads article cover images locally with sanitized filenames                                       |
+| **Translation**           | Translates article titles from Spanish → English via RapidAPI Google Translate 113                    |
+| **Word Analysis**         | Identifies words repeated 3+ times across translated titles (with stopword filtering)                 |
+| **Cross-Browser Testing** | Runs on BrowserStack across Chrome, Firefox, Safari, and mobile devices                               |
 
-Before you begin, ensure you have met the following requirements:
+---
 
-*   **Python 3.8+**: The project is developed and tested with Python 3.x.
-*   **pip**: Python package installer, usually comes with Python.
-*   **BrowserStack Account**: Required for running tests on BrowserStack. You will need your `BROWSERSTACK_USERNAME` and `BROWSERSTACK_ACCESS_KEY`.
-*   **RapidAPI Account (for Google Translate 113 API)**: Required for translation. You will need your `RAPIDAPI_KEY`.
+## 📋 Prerequisites
 
-## Setup Instructions
+- **Python 3.8+**
+- **pip** (Python package installer)
+- **Google Chrome** (or Firefox/Edge for local runs)
+- **RapidAPI Key** — Subscribe to the [Google Translate 113 API](https://rapidapi.com/gatz/api/google-translate113) on RapidAPI
+- **BrowserStack Account** _(optional, for cloud testing)_ — [Sign up here](https://www.browserstack.com/)
 
-Follow these steps to get the project up and running on your local machine:
+---
 
-1.  **Clone the Repository:**
-    ```bash
-    git clone https://github.com/your-username/browserstack-assignment.git
-    cd browserstack-assignment
-    ```
+## 🚀 Setup
 
-2.  **Create and Activate a Virtual Environment:**
-    It's recommended to use a virtual environment to manage project dependencies.
-    ```bash
-    python -m venv venv
-    ```
-    *   **On Windows:**
-        ```bash
-        .\venv\Scripts\activate
-        ```
-    *   **On macOS/Linux:**
-        ```bash
-        source venv/bin/activate
-        ```
+### 1. Clone & Navigate
 
-3.  **Install Dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+```bash
+git clone https://github.com/your-username/browserstack-assignment.git
+cd browserstack-assignment
+```
 
-4.  **Configure Environment Variables:**
-    Create a `.env` file in the root directory of the project based on `.env.example`.
-    ```
-    BROWSERSTACK_USERNAME="YOUR_BROWSERSTACK_USERNAME"
-    BROWSERSTACK_ACCESS_KEY="YOUR_BROWSERSTACK_ACCESS_KEY"
-    RAPIDAPI_KEY="YOUR_RAPIDAPI_KEY"
-    ```
-    Replace the placeholder values with your actual credentials.
+### 2. Create Virtual Environment
 
-## How to Run Locally
+```bash
+python -m venv venv
+```
 
-To execute the scraping, translation, and analysis flow locally:
+**Activate it:**
+
+- **Windows:** `.\venv\Scripts\activate`
+- **macOS/Linux:** `source venv/bin/activate`
+
+### 3. Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure Environment Variables
+
+Copy `.env.example` to `.env` and fill in your credentials:
+
+```env
+# BrowserStack credentials (optional — only needed for cloud testing)
+BROWSERSTACK_USERNAME=your_username
+BROWSERSTACK_ACCESS_KEY=your_access_key
+
+# Required — RapidAPI key for translation
+RAPIDAPI_KEY=your_rapidapi_key
+```
+
+---
+
+## ▶️ Usage
+
+### Run Locally
 
 ```bash
 python main.py
 ```
 
-The script will:
-*   Open a Chrome browser instance.
-*   Navigate to El País Opinion section.
-*   Scrape and process the first five articles.
-*   Print titles (Spanish), translated titles (English), and content excerpts.
-*   Download cover images to the `images` folder.
-*   Print an analysis of words repeated more than twice across translated headers.
-*   Gracefully handle and report any articles that fail to load or scrape.
+This will:
 
-## How to Run on BrowserStack
+1. Launch a Chrome browser and navigate to [El País Opinion](https://elpais.com/opinion/)
+2. Handle any cookie consent popups automatically
+3. Scrape the first 5 unique opinion articles
+4. For each article:
+   - Extract the title (and content if accessible — some articles may be paywalled)
+   - Translate the title from Spanish to English
+   - Download the cover image to the `images/` directory
+5. Analyze all translated titles for words repeated 3+ times
+6. Print a summary of the analysis
 
-To run the full test suite on BrowserStack across multiple browsers and devices (as configured in `browserstack.yml`):
+### Run on BrowserStack
 
-1.  **Ensure Virtual Environment is Active and Dependencies are Installed.**
-2.  **Ensure `.env` file is configured with `BROWSERSTACK_USERNAME` and `BROWSERSTACK_ACCESS_KEY`.**
-3.  **Execute the following command:**
+Ensure your `.env` has `BROWSERSTACK_USERNAME` and `BROWSERSTACK_ACCESS_KEY` configured, then:
 
-    ```bash
-    "D:\Prayas\MyProjects\El Pais BrowserStack\browserstack_assignment\venv\Scripts\browserstack-sdk.exe" pytest tests/test_el_pais.py
-    ```
-    **Note:** The path to `browserstack-sdk.exe` must be exact for your environment. If your project path does not contain spaces, you can omit the quotes around the executable path.
+```bash
+browserstack-sdk pytest tests/test_el_pais.py
+```
 
-    This command uses the `browserstack-sdk` to wrap the `pytest` execution of `tests/test_el_pais.py`, directing the tests to BrowserStack's cloud infrastructure. You can monitor the test progress and results on your BrowserStack Automate dashboard.
+> **Note (Windows):** If `browserstack-sdk` is not on your PATH, use the full path:
+>
+> ```bash
+> ".\venv\Scripts\browserstack-sdk.exe" pytest tests/test_el_pais.py
+> ```
 
-## Project Structure
+The test suite runs across the platforms defined in `browserstack.yml`:
 
-*   `main.py`: The main script that orchestrates the scraping, translation, and analysis.
-*   `utils/`: Contains utility modules.
-    *   `analyzer.py`: Logic for analyzing repeated words in text.
-    *   `scraper.py`: Handles web scraping logic using Selenium.
-    *   `translator.py`: Handles text translation using RapidAPI.
-*   `tests/`: Contains test files.
-    *   `test_el_pais.py`: Pytest test suite for validating the entire flow on BrowserStack.
-*   `browserstack.yml`: Configuration file for BrowserStack to define platforms for cross-browser testing.
-*   `requirements.txt`: Lists all Python dependencies.
-*   `.env.example`: Example file for environment variables.
-*   `.env`: Your local environment variables (ignored by Git).
-*   `images/`: Directory where scraped article cover images are saved.
-*   `log/`: Directory for log files.
+| Platform           | Browser          |
+| ------------------ | ---------------- |
+| Windows 11         | Chrome (latest)  |
+| macOS Ventura      | Safari (latest)  |
+| Windows 10         | Firefox (latest) |
+| Samsung Galaxy S22 | Chrome           |
+| iPhone 14          | Safari           |
 
-## Output Expectations
+Results are available on your [BrowserStack Automate Dashboard](https://automate.browserstack.com/).
 
-*   **Local Run:** Console output showing scraped article details, translated titles, download confirmations, and repeated word analysis.
-*   **BrowserStack Run:** Test results will be visible on your BrowserStack Automate dashboard, providing logs, screenshots, and video recordings for each platform defined in `browserstack.yml`.
+---
 
-## Sample Images
+## 🗂️ Project Structure
 
-Here are some sample images from the `public/` folder, which might be used as placeholders or examples within the project:
+```
+browserstack_assignment/
+├── main.py                  # Entry point — orchestrates scraping, translation & analysis
+├── utils/
+│   ├── scraper.py           # Selenium-based web scraping with paywall-resilient extraction
+│   ├── translator.py        # RapidAPI Google Translate integration
+│   └── analyzer.py          # Word frequency analysis with stopword filtering
+├── tests/
+│   ├── conftest.py          # Pytest fixtures (local & BrowserStack driver setup)
+│   └── test_el_pais.py      # End-to-end test suite with BrowserStack status reporting
+├── browserstack.yml         # BrowserStack platform configuration (5 platforms)
+├── pytest.ini               # Pytest configuration and custom markers
+├── requirements.txt         # Python dependencies
+├── .env.example             # Template for environment variables
+├── .gitignore               # Git ignore rules
+├── images/                  # Downloaded article cover images (git-ignored)
+├── log/                     # BrowserStack SDK logs (git-ignored)
+└── public/                  # Sample screenshots and reference images
+```
 
-![Sample Image 1](public/image.png)
-![Sample Image 2](public/image1.png)
-![Sample Image 3](public/image2.png)
-![Sample Image 4](public/image3.png)
+---
 
-## Troubleshooting
+## 🔧 How It Works
 
-*   **`TimeoutException` during scraping:** This indicates that a web page took too long to load. The script is designed to handle this gracefully by skipping the problematic article and continuing with others.
-*   **`browserstack-sdk` not found/command execution issues:** Ensure your virtual environment is active and the command for BrowserStack is precisely entered, including proper quoting for paths with spaces as demonstrated in the "How to Run on BrowserStack" section.
-*   **`RAPIDAPI_KEY` or `BROWSERSTACK_` credentials not found:** Double-check your `.env` file to ensure all required environment variables are set correctly.
-*   **"No words appeared frequently enough for analysis.":** This is normal if the translated titles of the scraped articles do not contain words repeated three or more times after stopword filtering.
+```
+┌─────────────────┐     ┌──────────────┐     ┌───────────────┐     ┌──────────────┐
+│  Navigate to    │────▶│  Scrape 5    │────▶│  Translate    │────▶│   Analyze    │
+│  El País        │     │  Articles    │     │  Titles       │     │   Word Freq  │
+│  /opinion/      │     │  (paywall-   │     │  ES → EN      │     │   (≥3 reps)  │
+│                 │     │   resilient) │     │               │     │              │
+└─────────────────┘     └──────────────┘     └───────────────┘     └──────────────┘
+                              │
+                              ▼
+                        ┌──────────────┐
+                        │  Download    │
+                        │  Cover       │
+                        │  Images      │
+                        └──────────────┘
+```
+
+### Paywall Handling
+
+El País articles may be behind a subscription wall. The scraper handles this gracefully:
+
+1. **Multi-selector extraction** — Tries 4 CSS selectors in order of specificity (`article .a_c p` → `[data-dtm-region] p` → `article .article_body p` → `article p`)
+2. **Fallback extraction** — If no paragraphs are found, extracts all visible text from the `<article>` element
+3. **Title-first processing** — Articles are processed as long as a title can be extracted, even if content is fully paywalled
+
+---
+
+## 📸 Sample Output Screenshots
+
+![BrowserStack Dashboard](public/image.png)
+![Article Scraping Output](public/image1.png)
+![Translation Results](public/image2.png)
+![Cross-Browser Results](public/image3.png)
+
+---
+
+## 🔍 Troubleshooting
+
+| Issue                                                        | Solution                                                                                               |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| `TimeoutException` during scraping                           | Page took too long to load. The script handles this gracefully by skipping the article                 |
+| `Content: [Not available — article may be behind a paywall]` | Normal behavior for subscriber-only articles. Titles and images are still extracted                    |
+| `browserstack-sdk` not found                                 | Ensure your venv is active. Use the full path to the executable if needed                              |
+| Missing `RAPIDAPI_KEY`                                       | Translation falls back to returning the original Spanish text                                          |
+| "No words appeared frequently enough"                        | Normal if translated titles don't share 3+ repeated words after stopword filtering                     |
+| Chrome fails to launch                                       | Ensure [ChromeDriver](https://chromedriver.chromium.org/) is installed and matches your Chrome version |

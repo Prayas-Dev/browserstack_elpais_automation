@@ -1,4 +1,21 @@
+# Virtual environment
 venv/
+
+# Python cache
 __pycache__/
-images/
+*.pyc
+*.pyo
+
+# Environment variables
 .env
+
+# Downloaded images
+images/
+
+# Logs (BrowserStack SDK logs can be very large)
+log/
+tests/log/
+
+# Pytest cache
+.pytest_cache/
+tests/.pytest_cache/

@@ -3,11 +3,8 @@ import requests
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-
 logger = logging.getLogger(__name__)
 
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")
 
 def translate_text(text, source="es", target="en"):
     """
@@ -16,6 +13,14 @@ def translate_text(text, source="es", target="en"):
     """
 
     if not text or not text.strip():
+        return text
+
+    # Load env vars at call time to ensure .env is available
+    load_dotenv()
+    rapidapi_key = os.getenv("RAPIDAPI_KEY")
+
+    if not rapidapi_key:
+        logger.warning("RAPIDAPI_KEY not set. Returning original text.")
         return text
 
     url = "https://google-translate113.p.rapidapi.com/api/v1/translator/text"
@@ -29,7 +34,7 @@ def translate_text(text, source="es", target="en"):
     headers = {
         "Content-Type": "application/json",
         "x-rapidapi-host": "google-translate113.p.rapidapi.com",
-        "x-rapidapi-key": RAPIDAPI_KEY
+        "x-rapidapi-key": rapidapi_key
     }
 
     try:
